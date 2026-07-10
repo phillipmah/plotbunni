@@ -32,7 +32,7 @@ export async function applyOp(db: PlotBunniDB, op: Op): Promise<Op> {
   if (op.type === 'update') {
     const entity = current!;
     const prev: Record<string, unknown> = {};
-    for (const k of Object.keys(op.patch)) prev[k] = (entity as Record<string, unknown>)[k];
+    for (const k of Object.keys(op.patch)) prev[k] = (entity as unknown as Record<string, unknown>)[k];
     const next = { ...entity, ...op.patch, version: entity.version + 1, updatedAt: Date.now() } as AnyEntity;
     await putEntity(db, op.store, next);
     const inverse: UpdateOp = {
