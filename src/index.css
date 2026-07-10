@@ -1,0 +1,16 @@
+* { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, sans-serif; color: #e7e7ea; background: #17171a; }
+.app { display: grid; grid-template-columns: 240px 1fr 320px; height: 100vh; }
+.pane { overflow: auto; padding: 12px; border-right: 1px solid #2c2c32; }
+.pane.agent { border-right: none; background: #1c1b22; }
+.tree-item { padding: 4px 6px; cursor: pointer; border-radius: 6px; font-size: 14px; }
+.tree-item:hover, .tree-item.sel { background: #2a2a31; }
+.tree-item.scene { padding-left: 20px; opacity: .85; }
+h3 { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; opacity: .55; margin: 12px 0 6px; }
+textarea, input { width: 100%; background: #0f0f12; color: inherit; border: 1px solid #2c2c32; border-radius: 8px; padding: 8px; font: inherit; }
+button { background: #6d5cf0; color: #fff; border: 0; border-radius: 8px; padding: 8px 12px; cursor: pointer; font: inherit; }
+button.ghost { background: #2a2a31; }
+.msg { background: #26232f; border: 1px solid #38344a; border-radius: 8px; padding: 8px; margin: 8px 0; font-size: 13px; white-space: pre-wrap; }
+.row { display: flex; gap: 8px; margin: 8px 0; }
+.prose { white-space: pre-wrap; line-height: 1.5; }
+.suggestion { border: 1px solid #6d5cf0; border-radius: 8px; padding: 10px; margin-top: 10px; background: #211f2b; }
