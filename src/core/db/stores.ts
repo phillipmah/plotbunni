@@ -17,3 +17,10 @@ export async function getAllEntities<T extends AnyEntity>(
   const all = (await db.getAll(store)) as T[];
   return opts.includeDeleted ? all : all.filter(e => !e.deleted);
 }
+
+// Hard removal — used only by the dispatcher to roll back a `create` within
+// an aborted turn (the entity never should have existed; tombstoning it would
+// leave a trace). Not a general-purpose deletion path.
+export async function removeEntity(db: PlotBunniDB, store: StoreName, id: string): Promise<void> {
+  await db.delete(store, id);
+}
