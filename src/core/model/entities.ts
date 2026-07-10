@@ -47,7 +47,7 @@ export interface Relationship extends BaseEntity {
   directed: boolean;
 }
 
-export interface Book extends BaseEntity { title: string; chapterOrder: EntityId[]; }
+export interface Book extends BaseEntity { title: string; synopsis: string; chapterOrder: EntityId[]; }
 export interface Chapter extends BaseEntity {
   bookId: EntityId; title: string; synopsis: string; sceneOrder: EntityId[];
 }
@@ -79,7 +79,7 @@ export const createRelationship = (
 ): Relationship => ({ ...base(), directed: false, ...p });
 
 export const createBook = (p: { title: string } & Partial<Book>): Book =>
-  ({ ...base(), chapterOrder: [], ...p });
+  ({ ...base(), synopsis: '', chapterOrder: [], ...p });
 
 export const createChapter = (
   p: { bookId: EntityId; title: string } & Partial<Chapter>,

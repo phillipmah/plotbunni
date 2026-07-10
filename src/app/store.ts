@@ -31,6 +31,16 @@ export class AppStore {
     return book;
   }
 
+  async updateBook(bookId: string, patch: { title?: string; synopsis?: string }): Promise<void> {
+    const book = await getEntity<Book>(this.db, 'books', bookId);
+    if (!book) throw new Error(`book ${bookId} not found`);
+    const turnId = newTurnId();
+    await dispatch(this.db, [{
+      type: 'update', store: 'books', entityId: bookId,
+      expectedVersion: book.version, actor: 'user', turnId, patch,
+    }], { actor: 'user', turnId });
+  }
+
   async chapters(bookId: string): Promise<Chapter[]> {
     return (await getAllEntities<Chapter>(this.db, 'chapters')).filter(c => c.bookId === bookId).sort(byCreated);
   }
