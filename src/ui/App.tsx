@@ -7,6 +7,8 @@ import { BUILTIN_MODULES } from '../core/ai/promptModules';
 import type { ProseSuggestion } from '../core/generate/prose';
 import type { Book, Chapter, Scene, BibleEntry } from '../core/model/entities';
 import { Settings } from './Settings';
+import { exportNovel } from '../app/export';
+import { downloadJson } from '../app/persist';
 
 const SYSTEM = composeSystemPrompt(BUILTIN_MODULES);
 
@@ -126,6 +128,11 @@ export function App() {
           <button className="ghost" disabled={!!busy} onClick={() => guard('Undoing…', async () => {
             await store.undoLast(); await refresh(store, book); say('Undid last change.');
           })}>Undo</button>
+          <button className="ghost" disabled={!!busy} onClick={() => guard('Exporting…', async () => {
+            const data = await exportNovel(store.db);
+            downloadJson(`${book.title.replace(/\s+/g, '-').toLowerCase()}.json`, data);
+            say('Exported novel JSON.');
+          })}>Export</button>
         </div>
         {log.map((m, i) => <div key={i} className="msg">{m}</div>)}
       </div>
