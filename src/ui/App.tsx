@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useSyncExternalStore } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { AppStore } from '../app/store';
 import { loadProfile } from '../app/settings';
 import { createTransport } from '../core/generate/transport';
@@ -14,7 +14,9 @@ import { Settings } from './Settings';
 const SYSTEM = composeSystemPrompt(BUILTIN_MODULES);
 
 function DebugPanel({ onClose }: { onClose: () => void }) {
-  const logs = useSyncExternalStore(subscribeLogs, getLogs);
+  const [, force] = useState(0);
+  useEffect(() => subscribeLogs(() => force(n => n + 1)), []);
+  const logs = getLogs();
   return (
     <div className="debug">
       <div className="row" style={{ margin: 0 }}>
@@ -59,7 +61,9 @@ export function App() {
   }, []);
 
   useEffect(() => {
-    (async () => { const s = await AppStore.open(); await refresh(s); setStore(s); })();
+    let opened: AppStore | null = null;
+    (async () => { opened = await AppStore.open(); await refresh(opened); setStore(opened); })();
+    return () => { opened?.db.close(); };
   }, [refresh]);
 
   const transport = () => {

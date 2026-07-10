@@ -2,17 +2,17 @@ import type { ChatTransport, ChatMessage } from '../core/generate/transport';
 
 export interface LogEntry { ts: number; kind: string; message: string }
 
-const buffer: LogEntry[] = [];
-const subscribers = new Set<() => void>();
 const MAX = 500;
+let logs: LogEntry[] = [];
+const subscribers = new Set<() => void>();
 
 export function pushLog(kind: string, message: string): void {
-  buffer.push({ ts: Date.now(), kind, message });
-  if (buffer.length > MAX) buffer.shift();
+  const next = [...logs, { ts: Date.now(), kind, message }];
+  logs = next.length > MAX ? next.slice(next.length - MAX) : next;
   subscribers.forEach(cb => cb());
 }
-export function getLogs(): LogEntry[] { return [...buffer]; }
-export function clearLogs(): void { buffer.length = 0; subscribers.forEach(cb => cb()); }
+export function getLogs(): LogEntry[] { return logs; }
+export function clearLogs(): void { logs = []; subscribers.forEach(cb => cb()); }
 export function subscribeLogs(cb: () => void): () => void {
   subscribers.add(cb);
   return () => { subscribers.delete(cb); };
