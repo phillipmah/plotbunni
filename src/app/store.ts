@@ -8,6 +8,8 @@ import { elaborateScenes } from '../core/generate/scenes';
 import { draftProse, acceptProse, type ProseSuggestion } from '../core/generate/prose';
 import { retrieve } from '../core/retrieval/retrieve';
 import { undo } from '../core/ops/undo';
+import { buildNarrativeMemory } from '../core/memory/narrative';
+import { summarizeScene } from '../core/generate/summarize';
 
 const byCreated = <T extends { createdAt: number }>(a: T, b: T) => a.createdAt - b.createdAt;
 
@@ -50,12 +52,24 @@ export class AppStore {
   async draft(transport: ChatTransport, system: string, sceneId: string): Promise<ProseSuggestion> {
     const scene = await getEntity<Scene>(this.db, 'scenes', sceneId);
     if (!scene) throw new Error(`scene ${sceneId} not found`);
+    const chapter = await getEntity<Chapter>(this.db, 'chapters', scene.chapterId);
+
+    let narrative = '';
+    if (chapter) {
+      const chapters = await this.chapters(chapter.bookId);
+      const scenesByChapter: Record<string, Scene[]> = {};
+      for (const ch of chapters) scenesByChapter[ch.id] = await this.scenes(ch.id);
+      narrative = buildNarrativeMemory({ orderedChapters: chapters, scenesByChapter, targetSceneId: sceneId });
+    }
+
     const entries = await this.entries();
     const items = retrieve({
       entries, relationships: [], queryText: scene.synopsis,
       linkedEntryIds: scene.linkedEntryIds.map(l => l.entryId),
     });
-    const context = items.map(i => i.content).join('\n\n');
+    const bible = items.map(i => i.content).join('\n\n');
+    const context = [narrative, bible].filter(Boolean).join('\n\n---\n\n');
+
     return draftProse({
       transport, system, sceneId, sceneVersion: scene.version,
       sceneSynopsis: scene.synopsis, context,
@@ -68,5 +82,9 @@ export class AppStore {
 
   async undoLast(): Promise<boolean> {
     return undo(this.db);
+  }
+
+  async summarize(transport: ChatTransport, system: string, sceneId: string): Promise<string> {
+    return summarizeScene(this.db, { transport, system, sceneId });
   }
 }
