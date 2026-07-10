@@ -42,7 +42,11 @@ export class AppStore {
   }
 
   async chapters(bookId: string): Promise<Chapter[]> {
-    return (await getAllEntities<Chapter>(this.db, 'chapters')).filter(c => c.bookId === bookId).sort(byCreated);
+    const book = await getEntity<Book>(this.db, 'books', bookId);
+    const order = new Map((book?.chapterOrder ?? []).map((id, i) => [id, i] as [string, number]));
+    return (await getAllEntities<Chapter>(this.db, 'chapters'))
+      .filter(c => c.bookId === bookId)
+      .sort((a, b) => (order.get(a.id) ?? 1e9) - (order.get(b.id) ?? 1e9) || a.createdAt - b.createdAt);
   }
   async scenes(chapterId: string): Promise<Scene[]> {
     return (await getAllEntities<Scene>(this.db, 'scenes')).filter(s => s.chapterId === chapterId).sort(byCreated);

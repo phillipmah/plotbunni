@@ -3,7 +3,7 @@ import type { EndpointProfile } from '../core/generate/transport';
 const KEY = 'plotbunni:endpoint';
 
 export const DEFAULT_PROFILE: EndpointProfile = {
-  baseUrl: '', apiKey: '', model: '', contextLength: 32000, maxOutput: 2000,
+  baseUrl: '', apiKey: '', model: '', contextLength: 32000, maxOutput: 8000,
 };
 
 export function loadProfile(): EndpointProfile | null {
