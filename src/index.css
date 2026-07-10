@@ -14,3 +14,11 @@ button.ghost { background: #2a2a31; }
 .row { display: flex; gap: 8px; margin: 8px 0; }
 .prose { white-space: pre-wrap; line-height: 1.5; }
 .suggestion { border: 1px solid #6d5cf0; border-radius: 8px; padding: 10px; margin-top: 10px; background: #211f2b; }
+
+.field { margin: 8px 0; }
+.field label { display: block; font-size: 12px; opacity: .6; margin-bottom: 4px; }
+.status.ok { color: #58d68d; } .status.err { color: #ec7063; }
+.debug { position: fixed; right: 0; bottom: 0; width: 420px; max-height: 45vh; overflow: auto; background: #0d0d10; border: 1px solid #2c2c32; border-radius: 8px 0 0 0; padding: 8px; font: 12px/1.4 ui-monospace, monospace; z-index: 50; }
+.debug .e { padding: 2px 0; border-bottom: 1px solid #1e1e24; }
+.debug .k { display: inline-block; width: 44px; opacity: .6; }
+select { width: 100%; background: #0f0f12; color: inherit; border: 1px solid #2c2c32; border-radius: 8px; padding: 8px; font: inherit; }
