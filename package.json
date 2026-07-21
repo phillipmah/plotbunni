@@ -10,7 +10,8 @@
     "test:watch": "vitest",
     "typecheck": "tsc -b --noEmit",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "e2e:live": "vite-node scripts/e2e-live.ts"
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.5",
@@ -103,6 +104,7 @@
     "tailwindcss": "^3.4.9",
     "typescript": "^5.9.3",
     "vite": "^5.4.0",
+    "vite-node": "^6.0.0",
     "vitest": "^4.1.10"
   }
 }
